@@ -27,7 +27,7 @@ if ($method == "POST") {
                 "email" => $userInTable['userEmail'],
             ];
 
-            $data = ["success" => "User logged in successfully", "session" => $_SESSION['user']];
+            $data = ["success" => "User logged in successfully", "session" => $_SESSION["user"]];
             echo json_encode($data);
         } else {
             http_response_code(401);
@@ -37,5 +37,12 @@ if ($method == "POST") {
         http_response_code(401);
         echo json_encode(["error" => "Invalid Email"]);
         exit;
+    }
+} else if ($method == "GET") {
+    if (isset($_SESSION['user'])) {
+        echo json_encode(["user" => $_SESSION["user"]]);
+    } else {
+        // http_response_code(401);
+        echo json_encode(["error" => "User not logged in"]);
     }
 }
