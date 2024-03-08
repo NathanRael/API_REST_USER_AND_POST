@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 require "../include/All.php";
 $adminPassword = '$2y$10$U5soZaw2FvYs4Epx6FgqXecVGAbiykkr2DgT.nq5aVW1lv5F.T7lO';
 $user = new UserController($pdo);

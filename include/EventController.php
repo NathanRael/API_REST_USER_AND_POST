@@ -11,6 +11,7 @@ class EventController
 
     public function addEvent($title, $desc, $image = null)
     {
+        
         $query = $this->pdo->prepare("INSERT INTO event(eventId, eventTitle, eventDesc, eventImage) VALUES  (:id,:title,:desc,:image)");
         $query->execute([
             "id" => createUniqId(),

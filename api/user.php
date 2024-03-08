@@ -32,7 +32,7 @@ switch ($method) {
             http_response_code(409); //confilct
             echo json_encode(["success" => false, "error" => "User already exist"]);
             die();
-        }
+        } 
         $user->addUser($userName, $userEmail, $password);
         break;
 
