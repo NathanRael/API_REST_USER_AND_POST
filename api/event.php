@@ -32,6 +32,10 @@ switch ($method) {
         $event->updateEvent($id, $title, $desc, $imageUrl);
         break;
     case "DELETE":
-        $event->removeEvent($id);
+        if (!$id) {
+            $event->removeEvent($id);
+        } else {
+            $event->removeAllEvent();
+        }
         break;
 }

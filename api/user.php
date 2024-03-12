@@ -32,7 +32,7 @@ switch ($method) {
             http_response_code(409); //confilct
             echo json_encode(["success" => false, "error" => "User already exist"]);
             die();
-        } 
+        }
         $user->addUser($userName, $userEmail, $password);
         break;
 
@@ -41,12 +41,23 @@ switch ($method) {
         break;
 
     case "PATCH":
-        $postedUser = json_decode(file_get_contents("php://input"), true);
-        $userName = $postedUser['name'] ?? "Undefined";
-        $userEmail = $postedUser['email'] ?? "Undefined";
-        $password = $postedUser['password'] ?? "Undefined";
-        $userImageUrl = $postedUser['userImageUrl'] ?? "Undefined";
-
-        $user->updateUser($id, $userName, $userEmail, $password, $userImageUrl);
+        if ($id) {
+            $postedUser = json_decode(file_get_contents("php://input"), true);
+            $userName = $postedUser['name'] ?? "Undefined";
+            $userEmail = $postedUser['email'] ?? "Undefined";
+            $oldPassword = $postedUser['oldPassword'];
+            $password = password_hash($postedUser['newPassword'], PASSWORD_DEFAULT);
+            $userImageUrl = $postedUser['userImageUrl'] ?? "Undefined";
+            $userInTable = $user->getUserInfo("userEmail", $userEmail)[0];
+            if (!password_verify($oldPassword, $userInTable['password'])) {
+                http_response_code(406);
+                echo json_encode(["error" => "Wrong password, please try again"]);
+                exit();
+            }
+            $user->updateUser($id, $userName, $userEmail, $password, $userImageUrl);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => "No user selected"]);
+        }
         break;
 }

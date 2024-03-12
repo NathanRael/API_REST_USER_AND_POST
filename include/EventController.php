@@ -11,7 +11,7 @@ class EventController
 
     public function addEvent($title, $desc, $image = null)
     {
-        
+
         $query = $this->pdo->prepare("INSERT INTO event(eventId, eventTitle, eventDesc, eventImage) VALUES  (:id,:title,:desc,:image)");
         $query->execute([
             "id" => createUniqId(),
@@ -55,6 +55,13 @@ class EventController
 
         echo json_encode(["success" => "Event removed successfully"]);
     }
+
+    public function removeAllEvent()
+    {
+        $query = $this->pdo->prepare("DELETE FROM event");
+        echo json_encode(["success" => "Event removed successfully"]);
+    }
+
 
     public function updateEvent($id, $title, $desc, $imageUrl = null)
     {

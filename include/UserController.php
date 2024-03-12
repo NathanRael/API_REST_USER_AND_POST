@@ -92,16 +92,18 @@ class UserController
     public function updateUser($id, $userName, $userEmail, $password, $userImageUrl)
     {
         if (!idExist($id, $this->pdo, "user", "userId")) {
+            http_response_code(404);
             echo json_encode(["success" => false, "error" => "The user doesn't exist"]);
             die;
         }
 
-        $query = $this->pdo->prepare("UPDATE  user SET userEmail = :email, userName = :name, userImageUrl = :imageUrl WHERE userId = :id");
+        $query = $this->pdo->prepare("UPDATE  user SET userEmail = :email, userName = :name, userImageUrl = :imageUrl, password = :password WHERE userId = :id");
         $query->execute([
             "id" => $id,
             "email" => $userEmail,
             "name" => $userName,
             "imageUrl" => $userImageUrl,
+            "password" => $password
         ]);
 
         echo json_encode(["success" => "User $userName  updated successfully"]);

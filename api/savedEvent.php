@@ -1,9 +1,7 @@
 <?php
-include '../include/All.php';
-
+require '../include/All.php';
 
 $savedEvent = new SavedEventController($pdo);
-
 
 switch ($method) {
     case "GET":
@@ -13,7 +11,7 @@ switch ($method) {
                 $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "userId" => $data['userId'], "userName" => $data['userName']];
             }
             echo json_encode($json_data);
-        }else{
+        } else {
             $datas = $savedEvent->getSavedEvent($id);
             foreach ($datas as $data) {
                 $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate']];
@@ -33,6 +31,7 @@ switch ($method) {
         break;
     case "DELETE":
         if (!$id) {
+            http_response_code(404);
             echo json_encode(["error" => "No event id selected"]);
             die;
         }

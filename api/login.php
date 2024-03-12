@@ -13,6 +13,7 @@ if ($method == "POST") {
     }
     $userEmail = $currrentUser['email'] ?? "undefined";
     $password = $currrentUser['password'] ?? "undefined";
+    
     $query = $user->getUserInfo("userEmail", $userEmail);
     if ($user->userInfoExist($query)) {
         $userInTable = $query[0];
@@ -25,6 +26,7 @@ if ($method == "POST") {
                 "roles" =>  password_verify($password, $adminPassword) ? "admin" : "client",
                 "name" => $userInTable['userName'],
                 "email" => $userInTable['userEmail'],
+                "password" => $userInTable['password'],
             ];
 
             $data = ["success" => "User logged in successfully", "session" => $_SESSION["user"]];
