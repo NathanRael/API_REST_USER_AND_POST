@@ -6,4 +6,5 @@ if (!isset($_SESSION)) {
 }
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Access-Control-Allow-Headers: X-Requested-With, Origin, Content-Type, X-CSRF-Token, Accept');
+header('Access-Control-Allow-Methods: GET,POST,DELETE,PATCH,OPTIONS,PUT');
 header('Access-Control-Allow-Credentials: true');
