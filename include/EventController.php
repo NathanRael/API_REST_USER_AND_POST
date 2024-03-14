@@ -24,7 +24,15 @@ class EventController
 
     public function getAllEvent()
     {
-        $query = $this->pdo->query("SELECT * FROM event");
+        $query = $this->pdo->query("SELECT * FROM event ORDER BY eventPostDate DESC");
+
+        return $query->fetchAll();
+    }
+    public function getRecentEvent($limit)
+    {
+        $query = $this->pdo->prepare("SELECT * FROM event ORDER BY eventPostDate  DESC LIMIT :limit ");
+        $query->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $query->execute();
 
         return $query->fetchAll();
     }
@@ -36,7 +44,7 @@ class EventController
             return json_encode(["success" => false, "error" => "Event not found"]);
         }
 
-        $query = $this->pdo->prepare("SELECT * FROM event WHERE eventId = :id");
+        $query = $this->pdo->prepare("SELECT * FROM event WHERE eventId = :id ORDER BY eventPostDate DESC");
         $query->execute([
             "id" => $id
         ]);

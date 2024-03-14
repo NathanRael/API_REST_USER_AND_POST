@@ -8,13 +8,13 @@ switch ($method) {
         if (!$id) {
             $datas = $savedEvent->getAllSavedEvent();
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "userId" => $data['userId'], "userName" => $data['userName']];
+                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId'], "userId" => $data['userId'], "userName" => $data['userName']];
             }
             echo json_encode($json_data);
         } else {
             $datas = $savedEvent->getSavedEvent($id);
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate']];
+                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId']];
             }
             echo json_encode($json_data);
         }
@@ -31,10 +31,10 @@ switch ($method) {
         break;
     case "DELETE":
         if (!$id) {
-            http_response_code(404);
-            echo json_encode(["error" => "No event id selected"]);
-            die;
+            $savedEvent->removeAllSavedEvent();
+        } else {
+            $savedEvent->removeSavedEvent($id);
         }
-        $savedEvent->removeSavedEvent($id);
+
         break;
 }

@@ -2,10 +2,18 @@
 require "../include/All.php";
 $event = new EventController($pdo);
 
+
 switch ($method) {
     case "GET":
+
         if (!$id) {
-            $datas = $event->getAllEvent();
+
+            if (!empty($_GET['limit'])) {
+                $limit =  $_GET['limit'];
+                $datas = $event->getRecentEvent($limit);
+            } else {
+                $datas = $event->getAllEvent();
+            }
             foreach ($datas as $data) {
                 $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate']];
             }
@@ -32,7 +40,7 @@ switch ($method) {
         $event->updateEvent($id, $title, $desc, $imageUrl);
         break;
     case "DELETE":
-        if (!$id) {
+        if ($id) {
             $event->removeEvent($id);
         } else {
             $event->removeAllEvent();

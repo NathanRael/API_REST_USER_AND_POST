@@ -19,13 +19,20 @@ class SavedEventController
             echo json_encode(["success" => false, "error" => "Unable to save event, The event doesn't exist"]);
             die;
         }
-        if (idExist($eventId, $this->pdo, "saved_event", "eventId")) {
+
+
+        $query = $this->pdo->prepare("SELECT * FROM saved_event WHERE eventId = :eventId AND userId = :userId");
+        $query->execute([
+            "eventId" => $eventId,
+            "userId" => $userId,
+        ]);
+
+        $data = $query->fetchAll();
+        if (count($data) > 0) {
             http_response_code(404);
             echo json_encode(["success" => false, "error" => "Unable to save event, The event already exist"]);
             die;
         }
-
-
         $query = $this->pdo->prepare("INSERT INTO saved_event(savedEventId, eventId, userId) VALUES  (:id,:eventId, :userId)");
         $query->execute([
             "id" => createUniqId(),
@@ -38,7 +45,7 @@ class SavedEventController
     public function getAllSavedEvent()
     {
 
-        $query = $this->pdo->query("SELECT event.eventId, event.eventTitle, event.eventDesc, event.eventImage, event.eventPostDate, user.userName, saved_event.userId FROM event INNER JOIN saved_event ON event.eventId = saved_event.eventId INNER JOIN user ON saved_event.userId = user.userId");
+        $query = $this->pdo->query("SELECT event.eventId, event.eventTitle, event.eventDesc, event.eventImage, event.eventPostDate, user.userName, saved_event.userId, saved_event.savedEventId FROM event INNER JOIN saved_event ON event.eventId = saved_event.eventId INNER JOIN user ON saved_event.userId = user.userId");
         $datas = $query->fetchAll();
         if (count($datas) <= 0) {
             http_response_code(404);
@@ -80,5 +87,10 @@ class SavedEventController
         ]);
 
         echo json_encode(["success" => "saved event $id removed successfully"]);
+    }
+    public function removeAllSavedEvent()
+    {
+        $this->pdo->query("DELETE FROM saved_event");
+        echo json_encode(["success" => "All saved event removed successfully"]);
     }
 }

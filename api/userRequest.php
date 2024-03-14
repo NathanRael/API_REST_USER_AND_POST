@@ -20,7 +20,7 @@ switch ($method) {
         } else {
             $datas = $request->getReq($id);
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['reqId'], "title" => $data['reqTitle'], "desc" => $data['reqDesc'], "state" => $data['reqState'], "date" => $req["reqDate"]];
+                $json_data["data"][] = ["id" => $data['reqId'], "title" => $data['reqTitle'], "desc" => $data['reqDesc'], "state" => $data['reqState'], "date" => $data["reqDate"]];
             }
             if (count($json_data) <= 0) {
                 http_response_code(404);
@@ -35,10 +35,9 @@ switch ($method) {
         $postedReq = json_decode(file_get_contents("php://input"), true);
         $title = $postedReq["title"];
         $desc = $postedReq['desc'];
-        $userId = $postedReq['userId'];
+        // $userId = $postedReq['userId'];
         $reqState = "envoyée";
-
-        $request->newReq($userId, $title, $desc, $reqState);
+        $request->newReq($id, $title, $desc, $reqState);
         break;
 
     case "DELETE":
@@ -48,7 +47,7 @@ switch ($method) {
     case "PATCH":
         if ($id) {
             $postedReq = json_decode(file_get_contents("php://input"), true);
-            $reqState = $postedReq['reqState'];
+            $reqState = $postedReq['state'];
             // $id = $postedReq['reqId'];
             $request->updateReqState($id, $reqState);
         } else {
