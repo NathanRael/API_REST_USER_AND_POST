@@ -15,29 +15,49 @@ switch ($method) {
                 $datas = $event->getAllEvent();
             }
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate']];
+                $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "imageUrl" => $data['eventImage']];
             }
 
             echo json_encode($json_data);
         } else {
             $data = $event->getEvent($id);
-            $json_data["data"] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate']];
+            $json_data["data"] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "imageUrl" => $data['eventImage']];
             echo json_encode($json_data);
         }
         break;
     case "POST":
-        $data = json_decode(file_get_contents("php://input"), true);
-        $title = $data['title'];
-        $desc = $data['desc'];
-        $imageUrl = $data['imageUrl'] ?? null;
-        $event->addEvent($title, $desc, $imageUrl);
+        // $data = json_decode(file_get_contents("php://input"), true);
+        $title = $_POST['title'];
+        $desc = $_POST['desc'];
+        $imageUrl = $_POST['imageUrl'] ?? null;
+        if (isset($_FILES['imageUrl'])) {
+            $fileName = time() . $_FILES['imageUrl']['name'];
+            $fileTmpName = $_FILES['imageUrl']["tmp_name"];
+            $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+
+            $event->addEvent($title, $desc, $fileName);
+            move_uploaded_file($fileTmpName, $destination);
+        } else {
+            $event->addEvent($title, $desc);
+        }
+
         break;
     case "PATCH":
-        $data = json_decode(file_get_contents("php://input"), true);
-        $title = $data['title'];
-        $desc = $data['desc'];
-        $imageUrl = $data['imageUrl'] ?? null;
-        $event->updateEvent($id, $title, $desc, $imageUrl);
+        // $data = json_decode(file_get_contents("php://input"), true);
+        $title = $_POST['title'];
+        $desc = $_POST['desc'];
+        $imageUrl = $_POST['imageUrl'] ?? null;
+        if (isset($_FILES['imageUrl'])) {
+            $fileName = time() . $_FILES['imageUrl']['name'];
+            $fileTmpName = $_FILES['imageUrl']["tmp_name"];
+            $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+
+            $event->updateEvent($id, $title, $desc, $imageUrl);
+            move_uploaded_file($fileTmpName, $destination);
+        } else {
+            $event->updateEvent($id, $title, $desc);
+        }
+
         break;
     case "DELETE":
         if ($id) {

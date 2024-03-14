@@ -43,18 +43,28 @@ switch ($method) {
     case "PATCH":
         if ($id) {
             $postedUser = json_decode(file_get_contents("php://input"), true);
-            $userName = $postedUser['name'] ?? "Undefined";
-            $userEmail = $postedUser['email'] ?? "Undefined";
-            $oldPassword = $postedUser['oldPassword'];
-            $password = password_hash($postedUser['newPassword'], PASSWORD_DEFAULT);
-            $userImageUrl = $postedUser['userImageUrl'] ?? "Undefined";
+            $userName = $_POST['name'] ?? "Undefined";
+            $userEmail = $_POST['email'] ?? "Undefined";
+            $oldPassword = $_POST['oldPassword'];
+            $password = password_hash($_POST['newPassword'], PASSWORD_DEFAULT);
+            $userImageUrl = $_POST['userImageUrl'] ?? "Undefined";
+
             $userInTable = $user->getUserInfo("userEmail", $userEmail)[0];
             if (!password_verify($oldPassword, $userInTable['password'])) {
                 http_response_code(406);
                 echo json_encode(["error" => "Wrong password, please try again"]);
                 exit();
             }
-            $user->updateUser($id, $userName, $userEmail, $password, $userImageUrl);
+            if (isset($_FILES['imageUrl'])) {
+                $fileName = time() . $_FILES['imageUrl']['name'];
+                $fileTmpName = $_FILES['imageUrl']["tmp_name"];
+                $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+
+                $user->updateUser($id, $userName, $userEmail, $password, $userImageUrl);
+                move_uploaded_file($fileTmpName, $destination);
+            } else {
+                $user->updateUser($id, $userName, $userEmail, $password);
+            }
         } else {
             http_response_code(404);
             echo json_encode(['error' => "No user selected"]);

@@ -89,7 +89,7 @@ class UserController
         echo json_encode(["success" => "User removed successfully"]);
     }
 
-    public function updateUser($id, $userName, $userEmail, $password, $userImageUrl)
+    public function updateUser($id, $userName, $userEmail, $password, $userImageUrl = null)
     {
         if (!idExist($id, $this->pdo, "user", "userId")) {
             http_response_code(404);
