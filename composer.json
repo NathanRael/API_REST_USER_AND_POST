@@ -1,0 +1,17 @@
+{
+    "name": "violette/rofia",
+    "authors": [
+        {
+            "name": "NathanRael",
+            "email": "ralaivoavy.natanael@gmail.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "App\\" : "include/"
+        }
+    },
+    "require": {
+        "notihnio/php-multipart-form-data-parser": "2.0"
+    }
+}

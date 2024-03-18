@@ -65,12 +65,13 @@ class UserController
 
     public function addUser($userName, $userEmail, $password, $userImage = null)
     {
-        $query = $this->pdo->prepare("INSERT INTO user(userId,userName,userEmail,password) VALUES (:id,:name,:email,:password)");
+        $query = $this->pdo->prepare("INSERT INTO user(userId,userName,userEmail,password, userImageUrl) VALUES (:id,:name,:email,:password, :imageUrl)");
         $query->execute([
             "id" => createUniqId(),
             "name" => strtolower($userName),
             "email" => strtolower($userEmail),
             "password" => $password,
+            "imageUrl" => $userImage
         ]);
         echo json_encode(["success" => "User added successfully"]);
     }
@@ -106,7 +107,7 @@ class UserController
             "password" => $password
         ]);
 
-        echo json_encode(["success" => "User $userName  updated successfully"]);
+        return $this->getUser($id);
     }
 
 

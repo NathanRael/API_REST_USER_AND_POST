@@ -52,14 +52,18 @@ class EventController
     }
     public function removeEvent($id)
     {
+        $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/";
         if (!idExist($id, $this->pdo, "event", "eventId")) {
             http_response_code(404);
             die(json_encode(["success" => false, "error" => "Unable to remove event, event not found"]));
         }
         $query = $this->pdo->prepare("DELETE FROM event WHERE eventId = :id");
         $query->execute([
-            "id" => $id
+            "id" => $id,
         ]);
+        if (file_exists($destination . $this->getEvent($id)['eventImage'])) {
+            unlink($destination . $this->getEvent($id)['eventImage']);
+        }
 
         echo json_encode(["success" => "Event removed successfully"]);
     }
@@ -67,6 +71,7 @@ class EventController
     public function removeAllEvent()
     {
         $query = $this->pdo->prepare("DELETE FROM event");
+
         echo json_encode(["success" => "Event removed successfully"]);
     }
 

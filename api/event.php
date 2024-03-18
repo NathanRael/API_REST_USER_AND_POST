@@ -1,5 +1,9 @@
 <?php
+
+use Notihnio\MultipartFormDataParser\MultipartFormDataParser;
+
 require "../include/All.php";
+// use Notihnio\MultipartFormDataParser;
 $event = new EventController($pdo);
 
 
@@ -26,33 +30,47 @@ switch ($method) {
         }
         break;
     case "POST":
-        // $data = json_decode(file_get_contents("php://input"), true);
+        $postMethod = $_POST['type'] ?? "POST";
         $title = $_POST['title'];
         $desc = $_POST['desc'];
-        $imageUrl = $_POST['imageUrl'] ?? null;
-        if (isset($_FILES['imageUrl'])) {
-            $fileName = time() . $_FILES['imageUrl']['name'];
-            $fileTmpName = $_FILES['imageUrl']["tmp_name"];
-            $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+        $imageDir = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images";
 
-            $event->addEvent($title, $desc, $fileName);
-            move_uploaded_file($fileTmpName, $destination);
+        if ($postMethod == "PUT") { // PATCH methods
+            if (isset($_FILES['imageUrl'])) {
+
+                $fileName = time() . $_FILES['imageUrl']['name'];
+                $fileTmpName = $_FILES['imageUrl']["tmp_name"];
+                $event->updateEvent($id, $title, $desc, $fileName);
+                move_uploaded_file($fileTmpName, $imageDir . "/" . $fileName);
+            } else {
+
+                $event->updateEvent($id, $title, $desc);
+            }
         } else {
-            $event->addEvent($title, $desc);
+            if (isset($_FILES['imageUrl'])) {
+                $fileName = time() . $_FILES['imageUrl']['name'];
+                $fileTmpName = $_FILES['imageUrl']["tmp_name"];
+                $event->addEvent($title, $desc, $fileName);
+                move_uploaded_file($fileTmpName, $imageDir . "/" . $fileName);
+            } else {
+                $event->addEvent($title, $desc);
+            }
         }
 
         break;
-    case "PATCH":
-        // $data = json_decode(file_get_contents("php://input"), true);
-        $title = $_POST['title'];
-        $desc = $_POST['desc'];
-        $imageUrl = $_POST['imageUrl'] ?? null;
-        if (isset($_FILES['imageUrl'])) {
-            $fileName = time() . $_FILES['imageUrl']['name'];
-            $fileTmpName = $_FILES['imageUrl']["tmp_name"];
-            $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+    case "PUT":
+        // using third-party library (notihnio)
+        $request = MultipartFormDataParser::parse();
+        $params = $request->params;
+        $files = $request->files;
 
-            $event->updateEvent($id, $title, $desc, $imageUrl);
+        $title = $params['title'];
+        $desc = $params['desc'];
+        if (isset($_FILES['imageUrl'])) {
+            $fileName = time() . $files['imageUrl']['name'];
+            $fileTmpName = $files['imageUrl']["tmp_name"];
+            $destination = $_SERVER["DOCUMENT_ROOT"] . "/Rofia/images" . "/" . $fileName;
+            $event->updateEvent($id, $title, $desc, $fileName);
             move_uploaded_file($fileTmpName, $destination);
         } else {
             $event->updateEvent($id, $title, $desc);

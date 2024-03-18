@@ -8,13 +8,13 @@ switch ($method) {
         if (!$id) {
             $datas = $savedEvent->getAllSavedEvent();
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId'], "userId" => $data['userId'], "userName" => $data['userName']];
+                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId'], "userId" => $data['userId'], "userName" => $data['userName'], "imageUrl" => $data['eventImage']];
             }
             echo json_encode($json_data);
         } else {
             $datas = $savedEvent->getSavedEvent($id);
             foreach ($datas as $data) {
-                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId']];
+                $json_data["data"][] = ["id" => $data['savedEventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "postId" => $data['eventId'], "imageUrl" => $data['eventImage']];
             }
             echo json_encode($json_data);
         }

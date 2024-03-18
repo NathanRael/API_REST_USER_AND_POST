@@ -13,7 +13,7 @@ if ($method == "POST") {
     }
     $userEmail = $currrentUser['email'] ?? "undefined";
     $password = $currrentUser['password'] ?? "undefined";
-    
+
     $query = $user->getUserInfo("userEmail", $userEmail);
     if ($user->userInfoExist($query)) {
         $userInTable = $query[0];
@@ -27,6 +27,7 @@ if ($method == "POST") {
                 "name" => $userInTable['userName'],
                 "email" => $userInTable['userEmail'],
                 "password" => $userInTable['password'],
+                "imageUrl" => $userInTable['userImageUrl'] ?? null,
             ];
 
             $data = ["success" => "User logged in successfully", "session" => $_SESSION["user"]];
