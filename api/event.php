@@ -9,7 +9,14 @@ $event = new EventController($pdo);
 
 switch ($method) {
     case "GET":
-
+        if (isset($_GET['search'])) {
+            $datas = $event->searchEvent($_GET['search']);
+            foreach ($datas as $data) {
+                $json_data["data"][] = ["id" => $data['eventId'], "title" => $data['eventTitle'], "desc" => $data['eventDesc'], "date" => $data['eventPostDate'], "imageUrl" => $data['eventImage']];
+            }
+            echo json_encode($json_data);
+            die;
+        }
         if (!$id) {
 
             if (!empty($_GET['limit'])) {

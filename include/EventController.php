@@ -37,6 +37,20 @@ class EventController
         return $query->fetchAll();
     }
 
+    public function searchEvent($title)
+    {
+        $query = $this->pdo->prepare("SELECT * FROM event WHERE eventTitle LIKE :title");
+        $query->execute([
+            "title" => "%" . $title . "%",
+        ]);
+        $result = $query->fetchAll();
+        // if (count($result) <= 0) {
+        //     echo json_encode(["error" => "Pas d'evènement trouvé"]);
+        //     die;
+        // }
+        return $result;
+    }
+
     public function getEvent($id)
     {
         if (!idExist($id, $this->pdo, "event", "eventId")) {

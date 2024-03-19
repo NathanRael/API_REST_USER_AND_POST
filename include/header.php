@@ -6,7 +6,9 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-header("Access-Control-Allow-Origin: http://localhost:5173 ");
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Access-Control-Allow-Headers: X-Requested-With, Origin, Content-Type, X-CSRF-Token, Accept, Access-Control-Allow-Headers');
 header('Access-Control-Allow-Methods: GET,POST, DELETE,PATCH,PUT, OPTIONS');
 header('Access-Control-Allow-Credentials: true');
+//http://localhost:5173
+//http://192.168.43.229:5173
